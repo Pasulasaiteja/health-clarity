@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,20 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Health app specific colors
+				health: {
+					'blue': '#1E88E5',
+					'light-blue': '#E3F2FD',
+					'red': '#F44336',
+					'yellow': '#FFC107',
+					'green': '#4CAF50',
+					'gray': '#F5F7FA'
+				},
+				severity: {
+					'mild': '#4CAF50',
+					'moderate': '#FFC107',
+					'severe': '#F44336'
 				}
 			},
 			borderRadius: {
@@ -84,11 +99,22 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-gentle': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.7' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-gentle': 'pulse-gentle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+			},
+			fontFamily: {
+				'sans': ['Inter', 'sans-serif'],
+			},
+			boxShadow: {
+				'health-card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)'
 			}
 		}
 	},
