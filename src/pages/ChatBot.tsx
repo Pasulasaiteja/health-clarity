@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { generateChatbotResponse } from '@/utils/chatbotUtils';
 
 const ChatBot = () => {
   const [messages, setMessages] = useState<Array<{text: string, sender: 'user' | 'bot'}>>([
@@ -15,6 +16,15 @@ const ChatBot = () => {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
   
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -25,21 +35,12 @@ const ChatBot = () => {
     setInput('');
     setIsLoading(true);
     
-    // Simulate AI response
+    // Generate AI response with a slight delay to simulate thinking
     setTimeout(() => {
-      const botResponses = [
-        "Based on your symptoms, it could be a common cold. Rest and stay hydrated.",
-        "That's a common concern. Many people experience these symptoms during seasonal changes.",
-        "I'd recommend consulting with a healthcare provider about those symptoms.",
-        "Have you noticed any other symptoms along with this?",
-        "Those symptoms could be related to several conditions. It's best to track when they occur.",
-        "Maintaining a healthy diet and regular exercise can help with those issues.",
-      ];
-      
-      const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)];
-      setMessages(prev => [...prev, { text: randomResponse, sender: 'bot' }]);
+      const aiResponse = generateChatbotResponse(userMessage.text);
+      setMessages(prev => [...prev, { text: aiResponse, sender: 'bot' }]);
       setIsLoading(false);
-    }, 1000);
+    }, 800);
   };
   
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -102,6 +103,8 @@ const ChatBot = () => {
                     </div>
                   </div>
                 )}
+                
+                <div ref={messagesEndRef} />
               </div>
               
               <div className="border-t p-3">
