@@ -7,6 +7,7 @@ import BodyRegionSelector from '@/components/BodyRegionSelector';
 import SymptomSelector from '@/components/SymptomSelector';
 import SeveritySelector from '@/components/SeveritySelector';
 import CheckerResults from '@/components/CheckerResults';
+import ChatBotButton from '@/components/ChatBotButton';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, ArrowRight, ClipboardCheck, HeartPulse, ShieldAlert } from 'lucide-react';
 
@@ -211,6 +212,9 @@ const Index = () => {
       </main>
       
       <Footer />
+      
+      {/* ChatBot Button */}
+      <ChatBotButton />
     </div>
   );
 };
