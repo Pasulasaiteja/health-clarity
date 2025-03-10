@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { AlertCircle, AlertTriangle, CheckCircle, ExternalLink, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -165,7 +164,7 @@ const CheckerResults: React.FC<CheckerResultsProps> = ({
       result.push({
         type: 'self-care',
         title: 'Self-care may be appropriate',
-        description: 'Your symptoms appear to be mild. Rest, hydration, and over-the-counter medications may help. Monitor your symptoms and seek medical care if they worsen or don't improve within a few days.'
+        description: "Your symptoms appear to be mild. Rest, hydration, and over-the-counter medications may help. Monitor your symptoms and seek medical care if they worsen or don't improve within a few days."
       });
     }
     
