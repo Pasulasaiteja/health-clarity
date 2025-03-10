@@ -35,9 +35,16 @@ export function generateChatbotResponse(userMessage: string): string {
       } else if (possibleIllnesses.length <= 3) {
         response += "These symptoms could be associated with several conditions, including ";
         response += possibleIllnesses.map(i => i.name).join(", ") + ". ";
+        
+        // Provide a bit more detail about the first condition
+        const firstIllness = possibleIllnesses[0];
+        response += `For example, ${firstIllness.name} typically presents with ${firstIllness.symptoms.join(", ")}. `;
         response += "Would you like more specific information about any of these conditions?";
       } else {
-        response += "These symptoms could be associated with various conditions. ";
+        response += "These symptoms could be associated with various conditions, including ";
+        // List the first 3-5 conditions
+        const topIllnesses = possibleIllnesses.slice(0, 4);
+        response += topIllnesses.map(i => i.name).join(", ") + " and others. ";
         response += "Can you provide any additional symptoms or information about when they started?";
       }
       
@@ -46,6 +53,15 @@ export function generateChatbotResponse(userMessage: string): string {
       
       return response;
     }
+  }
+  
+  // Check for symptom keywords that might not be in our database
+  const potentialSymptomWords = ["pain", "ache", "discomfort", "burning", "swelling", "rash", 
+                                "feeling", "tired", "dizzy", "weak", "sick", "ill", "hurt"];
+  
+  if (potentialSymptomWords.some(word => userMessage.toLowerCase().includes(word))) {
+    return "I notice you may be describing some symptoms. Could you list your specific symptoms more clearly? " +
+           "For example, if you have 'headache and fever', please mention those exact terms so I can provide better information.";
   }
   
   // If no symptoms are detected or no matching illnesses, provide general response

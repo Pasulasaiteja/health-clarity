@@ -194,18 +194,36 @@ export function findIllnessesBySymptoms(userSymptoms: string[]): Illness[] {
   // Normalize user symptoms (to lowercase for case-insensitive matching)
   const normalizedUserSymptoms = userSymptoms.map(s => s.toLowerCase());
   
-  // Filter illnesses that match at least one symptom
-  return illnesses.filter(illness => {
+  // Map to store illnesses and their matching symptom count
+  const illnessMatches: { illness: Illness; matchCount: number }[] = [];
+  
+  // Check each illness for matching symptoms
+  illnesses.forEach(illness => {
     // Normalize illness symptoms
     const normalizedIllnessSymptoms = illness.symptoms.map(s => s.toLowerCase());
     
-    // Check if any of the user's symptoms match this illness
-    return normalizedUserSymptoms.some(userSymptom => 
-      normalizedIllnessSymptoms.some(illnessSymptom => 
+    // Count how many of the user's symptoms match this illness
+    let matchCount = 0;
+    
+    normalizedUserSymptoms.forEach(userSymptom => {
+      if (normalizedIllnessSymptoms.some(illnessSymptom => 
         illnessSymptom.includes(userSymptom) || userSymptom.includes(illnessSymptom)
-      )
-    );
+      )) {
+        matchCount++;
+      }
+    });
+    
+    // If at least two symptoms match or all symptoms match for illnesses with fewer symptoms
+    if (matchCount >= 2 || (matchCount > 0 && matchCount >= normalizedUserSymptoms.length)) {
+      illnessMatches.push({ illness, matchCount });
+    }
   });
+  
+  // Sort by number of matching symptoms (most matches first)
+  illnessMatches.sort((a, b) => b.matchCount - a.matchCount);
+  
+  // Return just the illnesses in order of relevance
+  return illnessMatches.map(match => match.illness);
 }
 
 // Function to extract symptoms from user message
@@ -219,10 +237,33 @@ export function extractSymptomsFromMessage(message: string): string[] {
   // Convert message to lowercase for case-insensitive matching
   const lowerCaseMessage = message.toLowerCase();
   
-  // Find symptoms mentioned in the message
-  return uniqueSymptoms.filter(symptom => 
-    lowerCaseMessage.includes(symptom.toLowerCase())
-  );
+  // Find symptoms mentioned in the message with better partial matching
+  const foundSymptoms: string[] = [];
+  
+  uniqueSymptoms.forEach(symptom => {
+    const normalizedSymptom = symptom.toLowerCase();
+    
+    // Check for exact matches
+    if (lowerCaseMessage.includes(normalizedSymptom)) {
+      foundSymptoms.push(symptom);
+      return;
+    }
+    
+    // Check for common variations
+    const wordVariations = normalizedSymptom.split(" ");
+    if (wordVariations.length > 1) {
+      // For multi-word symptoms, check if most words are present
+      const matchingWords = wordVariations.filter(word => 
+        word.length > 3 && lowerCaseMessage.includes(word)
+      );
+      
+      if (matchingWords.length >= Math.ceil(wordVariations.length / 2)) {
+        foundSymptoms.push(symptom);
+      }
+    }
+  });
+  
+  return foundSymptoms;
 }
 
 // Function to get general health advice
